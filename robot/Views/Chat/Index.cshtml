@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>基于Html5与css3的聊天界面</title>
+    <title>吴琪的聊天器</title>
     @Styles.Render("~/Content/chatstyle")
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -24,7 +24,7 @@
             scroll_bottom();
         }
         function ajax_err() {
-            $("#chat_ul").append("<li role='you'>你貌似断网了，孩子，这是我给你的建议-.-</li>");
+            $("#chat_ul").append("<li role='you'>服务链接失败了-.-</li>");
             scroll_bottom();
         };
         function ajax_begin() {

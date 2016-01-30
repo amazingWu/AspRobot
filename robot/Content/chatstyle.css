@@ -2,6 +2,7 @@
   padding: 0;
   margin: 0;
   background-color:rgba(229,229,229,1);
+  word-break:break-all;
 }
 ::-webkit-scrollbar {
   width: 10px;
@@ -30,8 +31,9 @@
   border-radius: 10px;
   background-color: rgba(25, 147, 147, 0.2);
   color:black;
-  white-space:normal;
+  white-space:pre-wrap;
 }
+
 
 /* Chat - Avatar */
 .chat-thread li:before {
@@ -79,7 +81,7 @@
   -webkit-animation: show-chat-even 0.15s 1 ease-in;
   float: left;
   margin-left: 60px;
-  margin-right:20px;
+  margin-right:-1em;
   background-color:white;
 }
 
@@ -127,4 +129,43 @@
 .msg_end{
      height:0px;
      overflow:hidden;
+}
+
+/*食物类he新闻类展示的css*/
+.food,.news{
+	max-width:30em;
+}
+.food img,.news img{
+	width:100%;
+	height:7em;
+}
+
+.food section,.news section{
+	background-color:white;
+	min-height:4em;
+	border-bottom:1px solid #E0E0E0;
+	
+}
+.food section img{
+	width:50px;
+	height:50px;
+	display:block;
+	float:right;
+}
+.food section p{
+    display:block;
+    max-height:2.3em;
+	margin:3px 50px 3px 2px;
+    overflow:hidden;
+}
+.news section p{
+	display:block;
+    max-height:2.3em;
+	margin:3px 5px 3px 2px;
+    overflow:hidden;
+}
+.news section p+p{
+	color:#B2B2B2;
+	text-align:right;
+	font-size:0.8em;
 }

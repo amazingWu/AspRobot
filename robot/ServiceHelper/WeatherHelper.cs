@@ -22,16 +22,18 @@ namespace robot.ServiceHelper
         }
         public string HttpGet()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(http);
-            request.Method = "GET";
-            // request.ContentType = "text/html;charset=UTF-8";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
-            string retString = myStreamReader.ReadToEnd();
-            myStreamReader.Close();
-            myResponseStream.Close();
-            return retString;
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(http);
+            //request.Method = "GET";
+            //// request.ContentType = "text/html;charset=UTF-8";
+            //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            //Stream myResponseStream = response.GetResponseStream();
+            //StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
+            //string retString = myStreamReader.ReadToEnd();
+            //myStreamReader.Close();
+            //myResponseStream.Close();
+            //return retString;
+            HttpHelper httphelper = new HttpHelper();
+            return httphelper.HttpGet(http);
         }
 
         public WeatherMessage GetWeather()

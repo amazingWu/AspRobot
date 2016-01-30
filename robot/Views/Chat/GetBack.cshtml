@@ -1,2 +1,2 @@
-﻿@model robot.Models.ChatViewModel
-<li role="you">@Html.ValueFor(s=>s.content)</li>
+﻿@using robot.Models
+<li role="you">@(new HtmlString((ViewBag.Message as ChatViewModel).content))</li>

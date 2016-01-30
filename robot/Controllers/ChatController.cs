@@ -32,34 +32,48 @@ namespace robot.Controllers
             {
                 //获取表单
                 string formContent = Request.Form["sentinput"];
-                String location = formContent.Trim();
+                String search = formContent.Trim();
 
-                //根据服务抓取查询内容
-                WeatherHelper helper = new WeatherHelper(location);
-                WeatherMessage weathermessage = helper.GetWeather();
-                if (weathermessage.status.Equals("success"))
-                {
-                    WeatherModel weatherModel = weathermessage.results[0];
-                    //信息整理
-                    content = content + weatherModel.currentCity + "\n";
-                    Weather_data[] weather_datas = weatherModel.weather_data;
-                    for (int i = 0; i <= weather_datas.Length - 1; i++)
-                    {
-                        content = content + weather_datas[i].date + "\n";
-                        content = content + weather_datas[i].weather + "\n";
-                        content = content + weather_datas[i].temperature + "\n";
-                        content = content + weather_datas[i].wind + "\n";
-                    }
-                }
-                else
-                {
-                    content = "对不起，没有查询到你要查询的城市";
-                }
+                #region 自己的天气查询服务
+                ////根据服务抓取查询内容
+                //WeatherHelper helper = new WeatherHelper(search);
+                //WeatherMessage weathermessage = helper.GetWeather();
+                //if (weathermessage.status.Equals("success"))
+                //{
+                //    WeatherModel weatherModel = weathermessage.results[0];
+                //    //信息整理
+                //    content = content + weatherModel.currentCity + "\n";
+                //    Weather_data[] weather_datas = weatherModel.weather_data;
+                //    for (int i = 0; i <= weather_datas.Length - 1; i++)
+                //    {
+                //        content = content + weather_datas[i].date + "\n";
+                //        content = content + weather_datas[i].weather + "\n";
+                //        content = content + weather_datas[i].temperature + "\n";
+                //        content = content + weather_datas[i].wind + "\n";
+                //    }
+                //}
+                //else
+                //{
+                //    content = "对不起，没有查询到你要查询的城市";
+                //}
+                //ChatViewModel chatmessage = new ChatViewModel();
+                //chatmessage.role = "you";
+                //chatmessage.content = content;
+                //chatmessage.time = System.DateTime.Now.ToString();
+                //return PartialView(chatmessage);
+                #endregion
+
+                TulingHelper tulinghelper = new TulingHelper(search);
+                
                 ChatViewModel chatmessage = new ChatViewModel();
                 chatmessage.role = "you";
-                chatmessage.content = content;
+                chatmessage.content = tulinghelper.GetMessage();
                 chatmessage.time = System.DateTime.Now.ToString();
-                return PartialView(chatmessage);
+                ViewBag.Message = chatmessage;
+                return PartialView();
+                #region 图灵机器人
+
+                #endregion
             }
             return null;
         }
