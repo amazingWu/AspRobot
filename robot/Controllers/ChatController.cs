@@ -23,6 +23,17 @@ namespace robot.Controllers
             ViewData["content"] = chatmessage1;
             return View();
         }
+        public ActionResult Chat()
+        {
+            ChatViewModel chatmessage1 = new ChatViewModel();
+            chatmessage1.role = "you";
+            chatmessage1.content = "欢迎使用智能助手";
+            chatmessage1.time = System.DateTime.Now.ToString();
+            chatmessage.Add(chatmessage1);
+            ViewData["content"] = chatmessage1;
+            return View();
+        }
+
 
 
         public PartialViewResult GetBack()
@@ -63,17 +74,40 @@ namespace robot.Controllers
                 //return PartialView(chatmessage);
                 #endregion
 
-                TulingHelper tulinghelper = new TulingHelper(search);
                 
+
+                #region 图灵机器人
+                TulingHelper tulinghelper = new TulingHelper(search);
+
                 ChatViewModel chatmessage = new ChatViewModel();
                 chatmessage.role = "you";
                 chatmessage.content = tulinghelper.GetMessage();
                 chatmessage.time = System.DateTime.Now.ToString();
                 ViewBag.Message = chatmessage;
                 return PartialView();
-                #region 图灵机器人
-
                 #endregion
+
+            }
+            return null;
+        }
+
+
+        public string AjaxBack()
+        {
+            String content = "";
+            if (Request.Form["sentinput"].ToString() != null)
+            {
+                //获取表单
+                string formContent = Request.Form["sentinput"];
+                String search = formContent.Trim();     
+                #region 图灵机器人
+                //构造图灵机器人帮助类
+                TulingHelper tulinghelper = new TulingHelper(search);
+                //获取图灵Api返回消息
+                content=tulinghelper.GetMessage();
+                return content;
+                #endregion
+
             }
             return null;
         }

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+@{
+    Layout = null;
+}
+@using System.Collections
+@using robot.Models
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>智能机器人</title>
+    @Styles.Render("~/Content/chatstyle")
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <meta name="viewport" content="width=device-width,initian-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sent_btn").click(function () {
+                if ($("#sentinput").val() != null&&$("#sentinput").val()!="")
+                    Ajax();
+            });
+
+        });
+        function GoURLB() {
+            if (event.keyCode == 13) {
+                $("#sent_btn").click();
+            }
+        }
+        //jquery ajax
+        function Ajax() {
+            var sentinput = $("#sentinput").val();
+            $.ajax({
+                type: "POST",
+                url: "/Chat/AjaxBack",
+                //提交的数据
+                data: { sentinput},
+                dataType: "text",
+                async: false,
+                beforeSend: function ajax_begin() {
+                    var message = $("#sentinput").val();
+                    $("#sentinput").val("");
+                    $("#chat_ul").append("<li role='me'>" + message + "</li>");
+                    scroll_bottom();
+                },
+                success: function ajax_suc(msg) {
+                    $("#chat_ul").append("<li role='you'>"+msg+"</li>");
+                    scroll_bottom();
+                },
+                complete: function ajax_complete() {
+                },
+                error: function ajax_err(msg) {
+                    $("#chat_ul").append("<li role='you'>服务链接失败了-.-</li>");
+                    scroll_bottom();
+                },
+            });
+        } 
+        function scroll_bottom() {
+            msg_end.scrollIntoView();
+        }
+    </script>
+</head>
+<body onkeypress="GoURLB()">
+    <div id="convo">
+        <ul id="chat_ul" class="chat-thread">
+            <li role="@((ViewData["content"] as ChatViewModel).role)">@(Html.Encode(((ViewData["content"] as ChatViewModel).content)))</li>
+        </ul>
+    </div>
+    <div class="msg_end" id="msg_end"></div>
+    <div id="sent_div">
+            <input type="text" id="sentinput" name="sentinput" class="sent_input"/>
+            <input type="submit" id="sent_btn" class="sent_btn" value="发送" />
+        
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+@{
+    Layout = null;
+}
+@using System.Collections
+@using robot.Models
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>吴琪的聊天器</title>
+    @Styles.Render("~/Content/chatstyle")
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <meta name="viewport" content="width=device-width,initian-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#sent_btn").click(function(){
+                var message = $("#sentinput").val();
+                $("#chat_ul").append("<li role='me'>" + message + "</li>");
+                
+            }); 
+        });
+        function ajax_suc() {
+            scroll_bottom();
+        }
+        function ajax_err() {
+            $("#chat_ul").append("<li role='you'>服务链接失败了-.-</li>");
+            scroll_bottom();
+        };
+        function ajax_begin() {
+            $("#sentinput").val("");
+            scroll_bottom();
+        }
+        function scroll_bottom() {
+            msg_end.scrollIntoView();
+          
+        }
+    </script>
+</head>
+<body>
+    <div id="convo">
+        <ul id="chat_ul" class="chat-thread">
+            <li role="@((ViewData["content"] as ChatViewModel).role)">@(Html.Encode(((ViewData["content"] as ChatViewModel).content)))</li>
+        </ul>
+    </div>
+    <div class="msg_end" id="msg_end"></div>
+    <div id="sent_div">
+        @using (Ajax.BeginForm("GetBack", "Chat", new AjaxOptions() {
+            HttpMethod = "post", //传输方式
+            OnSuccess = "ajax_suc", //加载成功调用的js方法
+            OnFailure = "ajax_err", //出错调用的js方法
+            OnBegin = "ajax_begin",
+            UpdateTargetId = "chat_ul",//数据显示的html容器
+            InsertionMode = InsertionMode.InsertAfter//数据插入方式
+        }))
+        {
+            <input type="text" id="sentinput" name="sentinput" class="sent_input"/>
+            <input type="submit" id="sent_btn" class="sent_btn" value="发送" />
+        }
+        
+    </div>
+
+</body>
+
+</html>

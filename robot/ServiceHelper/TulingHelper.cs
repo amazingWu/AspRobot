@@ -7,6 +7,7 @@ using System.Web;
 
 namespace robot.ServiceHelper
 {
+    
     public class TulingHelper
     {
         //图铃机器人api地址
@@ -93,9 +94,9 @@ namespace robot.ServiceHelper
                     */
                     #endregion
                     FoodMessage foodmessage = JsonConvert.DeserializeObject<FoodMessage>(content);
-                    string foodsback = "<div class='food'><img src='";
+                    string foodsback = "<div class='food'><img src=";
                     if (foodmessage.list.Length != 0) {
-                        foodsback =foodsback+ foodmessage.list[0].icon+"'/>";
+                        foodsback =foodsback+ "'/Resources/Photos/food.jpg'/>";
                         for(int i = 0; i < foodmessage.list.Length; i++)
                         {
                             foodsback = foodsback + "<section onclick=\"location.href=\'" + foodmessage.list[i].detailurl + "\';\"><img src='" + foodmessage.list[i].icon + "'/>";
@@ -110,7 +111,6 @@ namespace robot.ServiceHelper
                     }
                     foodsback+= "</div>";
                     return HttpUtility.HtmlDecode(foodsback);
-                    break;
                 default:break;
             }
             return null;
