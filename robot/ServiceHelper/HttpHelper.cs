@@ -12,7 +12,7 @@ namespace robot.ServiceHelper
     {
 
         /// <summary>
-        /// post请求
+        /// post请求,post的参数时json字符串
         /// </summary>
         /// <param name="Url"></param>
         /// <param name="postDataStr"></param>
@@ -21,7 +21,7 @@ namespace robot.ServiceHelper
         public string HttpPost(string Url, List<KeyValuePair<string, string>> postParameters)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url);
-            request.Method = "POST";
+            request.Method = "POST"; 
             request.ContentType = "application/x-www-form-urlencoded";
             string parametersString = "";
             for (int i = 0; i < postParameters.Count; i++)
@@ -49,6 +49,39 @@ namespace robot.ServiceHelper
             myResponseStream.Close();
             return retString;
         }
+
+
+        /// <summary>
+        /// 参数为字符串的Post请求
+        /// </summary>
+        /// <param name="Url"></param>
+        /// <param name="postbody"></param>
+        /// <param name="headers"></param>
+        /// <returns></returns>
+        public string HttpPost(string Url, string postbody,List<KeyValuePair<string,string>> headers)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url);
+            request.Method = "POST";
+            request.ContentType = "application/json;charset=utf-8";
+            for (int i = 0; i < headers.Count(); i++)
+            {
+                request.Headers.Add(headers[i].Key,headers[i].Value);
+            }
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(postbody);
+            request.ContentLength = byteArray.Length;
+            Stream myRequestStream = request.GetRequestStream();
+            myRequestStream.Write(byteArray, 0, byteArray.Length);
+            myRequestStream.Close();
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream myResponseStream = response.GetResponseStream();
+            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
+            string retString = myStreamReader.ReadToEnd();
+            myStreamReader.Close();
+            myResponseStream.Close();
+            return retString;
+        }
+
         /// <summary>
         /// get请求
         /// </summary>

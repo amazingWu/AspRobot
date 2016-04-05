@@ -3,6 +3,7 @@ using robot.ServiceHelper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -11,7 +12,7 @@ namespace robot.Controllers
 {
     public class ChatController : Controller
     {
-        public static ArrayList chatmessage=new ArrayList();
+        //有输入框界面控制器
         //Get:Chat/Index
         public ActionResult Index()
         {
@@ -19,21 +20,29 @@ namespace robot.Controllers
             chatmessage1.role = "you";
             chatmessage1.content = "欢迎使用智能助手";
             chatmessage1.time = System.DateTime.Now.ToString();
-            chatmessage.Add(chatmessage1);
             ViewData["content"] = chatmessage1;
             return View();
         }
+        //无输入框聊天界面控制器
         public ActionResult Chat()
         {
             ChatViewModel chatmessage1 = new ChatViewModel();
             chatmessage1.role = "you";
             chatmessage1.content = "欢迎使用智能助手";
             chatmessage1.time = System.DateTime.Now.ToString();
-            chatmessage.Add(chatmessage1);
             ViewData["content"] = chatmessage1;
             return View();
         }
-
+        //无输入框聊天界面控制器
+        public ActionResult Robot()
+        {
+            ChatViewModel chatmessage1 = new ChatViewModel();
+            chatmessage1.role = "you";
+            chatmessage1.content = "欢迎使用智能助手";
+            chatmessage1.time = System.DateTime.Now.ToString();
+            ViewData["content"] = chatmessage1;
+            return View();
+        }
 
 
         public PartialViewResult GetBack()
@@ -44,41 +53,11 @@ namespace robot.Controllers
                 //获取表单
                 string formContent = Request.Form["sentinput"];
                 String search = formContent.Trim();
-
-                #region 自己的天气查询服务
-                ////根据服务抓取查询内容
-                //WeatherHelper helper = new WeatherHelper(search);
-                //WeatherMessage weathermessage = helper.GetWeather();
-                //if (weathermessage.status.Equals("success"))
-                //{
-                //    WeatherModel weatherModel = weathermessage.results[0];
-                //    //信息整理
-                //    content = content + weatherModel.currentCity + "\n";
-                //    Weather_data[] weather_datas = weatherModel.weather_data;
-                //    for (int i = 0; i <= weather_datas.Length - 1; i++)
-                //    {
-                //        content = content + weather_datas[i].date + "\n";
-                //        content = content + weather_datas[i].weather + "\n";
-                //        content = content + weather_datas[i].temperature + "\n";
-                //        content = content + weather_datas[i].wind + "\n";
-                //    }
-                //}
-                //else
-                //{
-                //    content = "对不起，没有查询到你要查询的城市";
-                //}
-                //ChatViewModel chatmessage = new ChatViewModel();
-                //chatmessage.role = "you";
-                //chatmessage.content = content;
-                //chatmessage.time = System.DateTime.Now.ToString();
-                //return PartialView(chatmessage);
-                #endregion
-
-                
+                //得到用户唯一sessionid
+                String uid = HttpContext.Session["user"].ToString();
 
                 #region 图灵机器人
-                TulingHelper tulinghelper = new TulingHelper(search);
-
+                TulingHelper tulinghelper = new TulingHelper(search,uid);
                 ChatViewModel chatmessage = new ChatViewModel();
                 chatmessage.role = "you";
                 chatmessage.content = tulinghelper.GetMessage();
@@ -91,7 +70,7 @@ namespace robot.Controllers
             return null;
         }
 
-
+        //javascript异步调用图灵机器人
         public string AjaxBack()
         {
             String content = "";
@@ -99,13 +78,45 @@ namespace robot.Controllers
             {
                 //获取表单
                 string formContent = Request.Form["sentinput"];
-                String search = formContent.Trim();     
+                String search = formContent.Trim();
+                //得到用户唯一sessionid
+                String uid = HttpContext.Session["user"].ToString();
                 #region 图灵机器人
                 //构造图灵机器人帮助类
-                TulingHelper tulinghelper = new TulingHelper(search);
+                TulingHelper tulinghelper = new TulingHelper(search,uid);
                 //获取图灵Api返回消息
-                content=tulinghelper.GetMessage();
+                content =tulinghelper.GetMessage();
                 return content;
+                #endregion
+
+            }
+            return null;
+        }
+
+        //javascript异步调用api.ai
+        public string RobotAjaxBack()
+        {
+            String content = "";
+            if (Request.Form["sentinput"].ToString() != null)
+            {
+                //获取表单
+                string formContent = Request.Form["sentinput"];
+                String search = formContent.Trim();
+                //得到用户唯一sessionid
+                String uid = HttpContext.Session["user"].ToString();
+                #region 测试api.ai的post请求
+                //构造要提交的请求的参数
+                ApiJson apijson = new ApiJson();
+                apijson.query = new List<string> { search };
+                apijson.sessionid = uid;
+                apijson.v = "20160330";
+                apijson.lang = "ZH-CN";
+                apijson.resetContexts = false;
+                //构造Api.ai帮助类
+                ApiHelper apihelper = new ApiHelper(apijson.ToString());
+                //获取post请求，并把返回的json封装成对象
+                string result = apihelper.GetApiPost();
+                return result;
                 #endregion
 
             }
@@ -115,7 +126,7 @@ namespace robot.Controllers
         //[HttpPost]
         //public ActionResult Chat()
         //{
-            
+
         //    if (Request.Form["content"].ToString() != null)
         //    {
         //        chatmessage.Add(new ChatViewModel

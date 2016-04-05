@@ -19,5 +19,13 @@ namespace robot
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             
         }
+        void Session_Start(object sender, EventArgs e)
+        {
+            HttpContext.Current.Session["user"] = Session.SessionID.ToString();
+        }
+        void Session_End(object sender, EventArgs e)
+        {
+            // TODO
+        }
     }
 }

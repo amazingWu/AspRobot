@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.SessionState;
 
 namespace robot.ServiceHelper
 {
@@ -11,16 +12,24 @@ namespace robot.ServiceHelper
     public class TulingHelper
     {
         //图铃机器人api地址
-        public const string TUPING_URL = "http://www.tuling123.com/openapi/api";
+        private const string TUPING_URL = "http://www.tuling123.com/openapi/api";
         //产品ak
-        public const string AK = "a05e266389bc8d5f03f8e055da1ea825";
-
-        private string userid = "12345678";
-        public string info { get; set; }
-        public TulingHelper(string info)
+        private const string AK = "a05e266389bc8d5f03f8e055da1ea825";
+        //userid，要保证不唯一
+        private string userid = "";
+        //要发送给图灵的信息
+        private string info { get; set; }
+        //初始化构造,用来传递进info
+        public TulingHelper(string info,string sessionid)
         {
+            userid = sessionid;
             this.info = info;
         }
+
+        /// <summary>
+        /// 构造post请求，并得到返回值
+        /// </summary>
+        /// <returns></returns>
         public string getHttp()
         {
             HttpHelper httphelper = new HttpHelper();
@@ -31,6 +40,10 @@ namespace robot.ServiceHelper
             return httphelper.HttpPost(TUPING_URL,parms);
         }
 
+        /// <summary>
+        /// 根据图灵Api的返回结果将结果封装成html的文本内容，以方便添加进网页中
+        /// </summary>
+        /// <returns></returns>
         public string GetMessage()
         {
             string content = getHttp();
